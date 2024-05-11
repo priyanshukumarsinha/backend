@@ -93,3 +93,13 @@ userSchema.methods.generateRefreshToken = function(){
 }
 
 export const User = mongoose.models("User", userSchema)
+
+
+
+// multer is used to handle files uploaded from html forms and bring them as request to handle in JS
+// cloudinary is then used to upload the file to the storage (bucket)
+
+// What we will do is : 
+//  - take file uploaded from user and keep it in localstorage
+//  - then we will upload the file from localstorage to the server
+// It is done, if the file is not uploaded on cloudinary due to some error, we can reattempt
