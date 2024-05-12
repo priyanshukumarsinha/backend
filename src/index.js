@@ -9,7 +9,7 @@ import { app } from './app.js';
 
 // Now, we need to config dotenv
 dotenv.config({
-    path : './env'
+    path : './.env'
 })
 
 
