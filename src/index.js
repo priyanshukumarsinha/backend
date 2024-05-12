@@ -20,11 +20,6 @@ dotenv.config({
 // hence we can use .then and .catch here to handle the response and error
 connectDB()
   .then(
-    app.on((error) => {
-      console.log("ERROR while Connecting to APP :: ", error);
-      throw error;
-    }) 
-  ).then(
     app.listen(process.env.PORT || 8000, () => {
       console.log(`Server is Running at Port ${process.env.PORT}`)
     })
