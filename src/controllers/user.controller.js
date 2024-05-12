@@ -4,6 +4,7 @@ import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/Cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import {isPasswordCorrect} from '../models/user.model.js'
+import { set } from "mongoose";
 
 const registerUser = asyncHandler( async(req, res) => {
     // ALGORITHM: 
@@ -134,8 +135,26 @@ const loginUser = asyncHandler( async(req, res) => {
 })
 
 const logoutUser = asyncHandler(async(req, res) => {
-    // User.findById()
-    // res.clearCookie()
+    await User.findByIdAndUpdate(req.user._id, {
+        $set : {
+            refreshToken : undefined,
+        },
+        {
+            new : true,
+        }
+    })
+
+    const options = {
+        httpOnly : true, //httpOnly	: Boolean : Flags the cookie to be accessible only by the web server.
+        secure : true, //secure : Boolean : Marks the cookie to be used with HTTPS only.
+    }
+
+    return res.status(200)
+                .clearCookie("accessToken", options)
+                .clearCookie("refreshToken", options)
+                .json(
+                    new ApiResponse(200, {}, "User Logged out Successfully !!");
+                )
 })
 
 const generateAccessAndRefreshTokens = async(userId) => {
@@ -157,4 +176,4 @@ const generateAccessAndRefreshTokens = async(userId) => {
     }
 }
 
-export {registerUser, loginUser}
+export {registerUser, loginUser, logoutUser}
