@@ -94,7 +94,7 @@ userSchema.methods.generateRefreshToken = function(){
 
 export const User = mongoose.model("User", userSchema)
 
-
+// export {isPasswordCorrect, generateAccessToken, generateRefreshToken}
 
 // multer is used to handle files uploaded from html forms and bring them as request to handle in JS
 // cloudinary is then used to upload the file to the storage (bucket)

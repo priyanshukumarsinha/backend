@@ -26,6 +26,7 @@ app.use(express.urlencoded({extended : true, limit : "16kb", }))
 app.use(express.static("public"))
 
 // To keep secure Cookies and perform CRUD operation on them : 
+// Parse Cookie header and populate req.cookies with an object keyed by the cookie names.
 app.use(cookieParser())
 
 
