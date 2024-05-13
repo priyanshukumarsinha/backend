@@ -69,7 +69,6 @@ const registerUser = asyncHandler( async(req, res) => {
 
 })
 
-
 const loginUser = asyncHandler( async(req, res) => {
     // TODO:
     // Take data from (req.body) user (i.e email/username and password)
@@ -290,6 +289,7 @@ const updateAccountDetails = asyncHandler(async(req, res) => {
 const updateUserAvatar = asyncHandler(async(req, res) => {
 
     // after uploading new Avatar file : it will be available in public/temp
+    // TODO: delete file from cloudinary
     const avatarLocalPath = req.file?.path
     if(!avatarLocalPath) throw new ApiError(404, "Avatar File is Missing");
 

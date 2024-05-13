@@ -3,11 +3,11 @@ import mongoose, { Schema } from 'mongoose'
 const subscriptionSchema = new Schema(
     {
         subscriber : {
-            type : Schema.Types.ObjectId, // one who is subscribing
+            type : Schema.Types.ObjectId, // one who is subscribing // from subscriber we get total number of subscriptions // following
             ref : "User"
         },
         channel : {
-            type : Schema.Types.ObjectId, // one who is subscribed
+            type : Schema.Types.ObjectId, // one who is subscribed // from channel we get total subscribers : follower
             ref : "User"
         }
     },
