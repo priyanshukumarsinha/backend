@@ -181,7 +181,7 @@ const generateAccessAndRefreshTokens = async(userId) => {
 const refreshAccessToken = asyncHandler(async(req, res) => {
     try {
         const incomeingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
-        if(incomeingRefreshToken) throw new ApiError(404, "Unautorized Request");
+        if(!incomeingRefreshToken) throw new ApiError(404, "Unautorized Request");
     
         // now verify
         const decodedToken = jwt.verify(incomeingRefreshToken, process.env.REFRESH_TOKEN_SECRET)
