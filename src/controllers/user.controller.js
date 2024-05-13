@@ -287,4 +287,46 @@ const updateAccountDetails = asyncHandler(async(req, res) => {
                 )
 })
 
-export {registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails}
+const updateUserAvatar = asyncHandler(async(req, res) => {
+
+    // after uploading new Avatar file : it will be available in public/temp
+    const avatarLocalPath = req.file?.path
+    if(!avatarLocalPath) throw new ApiError(404, "Avatar File is Missing");
+
+    const avatar = await uploadOnCloudinary(avatarLocalPath)
+
+    if(!avatar.url) throw new ApiError(404, "Error while uploading on Avatar");
+
+    const user = await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set : {
+                avatar : avatar.url
+            }
+        },
+        {
+            new : true
+        }
+    ).select("-password");
+
+    res.status(200)
+        .json(
+            new ApiResponse(
+                200,
+                user,
+                "Avatar Updated Successfully!"
+            )
+        )
+
+})
+
+export {
+    registerUser, 
+    loginUser, 
+    logoutUser, 
+    refreshAccessToken, 
+    changeCurrentPassword, 
+    getCurrentUser, 
+    updateAccountDetails,
+    updateUserAvatar,
+}
