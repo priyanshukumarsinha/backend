@@ -4,6 +4,7 @@ import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/Cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { set } from "mongoose";
+import jwt from 'jsonwebtoken'
 
 const registerUser = asyncHandler( async(req, res) => {
     // ALGORITHM: 
@@ -102,7 +103,7 @@ const loginUser = asyncHandler( async(req, res) => {
 
     // Access and Refresh Token Generation
     const {accessToken, refreshToken} = await generateAccessAndRefreshTokens(user._id);
-    console.log(accessToken, refreshToken)
+
     // Send them as Cookies
     const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
     
@@ -177,4 +178,48 @@ const generateAccessAndRefreshTokens = async(userId) => {
     }
 }
 
-export {registerUser, loginUser, logoutUser}
+const refreshAccessToken = asyncHandler(async(req, res) => {
+    try {
+        const incomeingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
+        if(incomeingRefreshToken) throw new ApiError(404, "Unautorized Request");
+    
+        // now verify
+        const decodedToken = jwt.verify(incomeingRefreshToken, process.env.REFRESH_TOKEN_SECRET)
+    
+        // find user
+        const user = await User.findById(decodedToken?._id);
+        if(!user) throw new ApiError(408, "Invalid Refresh Token");
+    
+        // matching
+        if(incomeingRefreshToken !== user?.refreshToken) throw new ApiError(409, "Refresh Token is Expired or Used!");
+    
+        // if matched : generate new access and refresh token
+        // send in cookies
+    
+        const options = {
+            httpOnly : true,
+            secure : true
+        }
+    
+        const {accessToken, newRefreshToken } = await generateAccessAndRefreshTokens(user._id);
+    
+        return res.status(200)
+                    .cookie("accessToken", accessToken, options)
+                    .cookie("refreshToken", newRefreshToken, options)
+                    .json(
+                        new ApiResponse(
+                            200,
+                            {
+                                accessToken,
+                                newRefreshToken
+                            },
+                            "Access Token Refreshed Successfully!"
+                        )
+                    )
+    } catch (error) {
+        throw new ApiError(500, "Invalid Refresh Token");
+    }
+
+})
+
+export {registerUser, loginUser, logoutUser, refreshAccessToken}
