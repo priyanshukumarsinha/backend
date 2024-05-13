@@ -3,7 +3,6 @@ import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/Cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import {isPasswordCorrect} from '../models/user.model.js'
 import { set } from "mongoose";
 
 const registerUser = asyncHandler( async(req, res) => {
@@ -84,7 +83,7 @@ const loginUser = asyncHandler( async(req, res) => {
     const {email, username, password} = req.body;
 
     // Validation : Check if the data is as per our need
-    if(!username || !email) throw new ApiError(402, "Username or Email is Required !!");
+    if(!username && !email) throw new ApiError(402, "Username or Email is Required !!");
 
     // Find the user : check if any User exists with this username or email in DB
     const user = await User.findOne({
@@ -103,7 +102,7 @@ const loginUser = asyncHandler( async(req, res) => {
 
     // Access and Refresh Token Generation
     const {accessToken, refreshToken} = await generateAccessAndRefreshTokens(user._id);
-    
+    console.log(accessToken, refreshToken)
     // Send them as Cookies
     const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
     
@@ -135,14 +134,16 @@ const loginUser = asyncHandler( async(req, res) => {
 })
 
 const logoutUser = asyncHandler(async(req, res) => {
-    await User.findByIdAndUpdate(req.user._id, {
-        $set : {
-            refreshToken : undefined,
+    await User.findByIdAndUpdate(req.user._id, 
+        {
+            $set : {
+                refreshToken : undefined,
+            }
         },
         {
-            new : true,
+            new : true
         }
-    })
+    )
 
     const options = {
         httpOnly : true, //httpOnly	: Boolean : Flags the cookie to be accessible only by the web server.
@@ -153,7 +154,7 @@ const logoutUser = asyncHandler(async(req, res) => {
                 .clearCookie("accessToken", options)
                 .clearCookie("refreshToken", options)
                 .json(
-                    new ApiResponse(200, {}, "User Logged out Successfully !!");
+                    new ApiResponse(200, {}, "User Logged out Successfully !!")
                 )
 })
 
