@@ -18,7 +18,7 @@ const uploadVideo = asyncHandler(async(req, res) => {
         // set isPublished to true;
     // checking if video exists now (i.e if video is uploaded)
     // send response
-    
+
     // takes data from user
     const {title, description} = req.body;
     
@@ -69,6 +69,20 @@ const uploadVideo = asyncHandler(async(req, res) => {
 
 })
 
+// 2. delete Video
+const deleteVideo = asyncHandler(async(req,res) => {
+
+})
+
+// 3. update video details
+const updateVideoDetails = asyncHandler(async(req,res) => {
+
+})
+
+// 4. count views
+const countViews = asyncHandler(async(req, res) => {
+
+})
 
 // TODO:
 // 2. delete Video
@@ -78,4 +92,7 @@ const uploadVideo = asyncHandler(async(req, res) => {
 
 export {
     uploadVideo,
+    deleteVideo,
+    updateVideoDetails,
+    countViews,
 }
