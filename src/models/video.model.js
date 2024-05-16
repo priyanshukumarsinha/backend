@@ -19,7 +19,7 @@ const videoSchema = new Schema(
             type : String,
             required : true,
         },
-        descripton : {
+        description : {
             type : String,
             required : true,
         },
@@ -42,4 +42,5 @@ const videoSchema = new Schema(
 
 videoSchema.plugin(mongooseAggregatePaginate)
 
-export const Video = mongoose.models("Video", videoSchema)
+
+export const Video = mongoose.model("Video", videoSchema)
