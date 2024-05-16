@@ -6,12 +6,19 @@ import { uploadOnCloudinary } from "../utils/Cloudinary.js";
 import { Video } from "../models/video.model.js";
 
 // 1. upload Video (allow to upload only if user is loggedIn : verifyJWT)
-// takes data from user
-// Validation : data is as per our need or not
-// take files from user
-// Upload Video file on cloudinary
-
 const uploadVideo = asyncHandler(async(req, res) => {
+    // Algorithm : 
+    // takes data from user
+    // Validation : data is as per our need or not
+    // take files from user
+    // Upload Video file on cloudinary
+    // create Video Object : create entry in db (add video in mongodb Database (if all conditions true))
+        // set the owner to current user
+        // Set duration
+        // set isPublished to true;
+    // checking if video exists now (i.e if video is uploaded)
+    // send response
+    
     // takes data from user
     const {title, description} = req.body;
     
@@ -47,10 +54,11 @@ const uploadVideo = asyncHandler(async(req, res) => {
         isPublished : true,
     })
 
-    // checking if user exists now (i.e if user is created)
+    // checking if video exists now (i.e if video is uploaded)
     const uploadedVideo = await Video.findById(video._id)
     if(!uploadedVideo) throw new ApiError(500, "Video Upload Failed!!")
     
+    // send response
     res.status(200).json(
         new ApiResponse (
             200,
