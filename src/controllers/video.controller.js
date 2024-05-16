@@ -2,7 +2,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { uploadOnCloudinary } from "../utils/Cloudinary.js";
+import { deleteFromCloudinary, uploadOnCloudinary } from "../utils/Cloudinary.js";
 import { Video } from "../models/video.model.js";
 
 // 1. upload Video (allow to upload only if user is loggedIn : verifyJWT)
@@ -70,29 +70,43 @@ const uploadVideo = asyncHandler(async(req, res) => {
 })
 
 // 2. delete Video
-const deleteVideo = asyncHandler(async(req,res) => {
+const deleteVideo = asyncHandler(async(req, res) => {
+    // Algorithm :
+    // take videoId from params
+    // delete the video and thumbnail file from cloudinary
+    // delete the object with videoId from DB
+    // return response
+    
+    // take videoId from params
+    const {videoId} = req.params
+    const video = await Video.findById(videoId)
+    if(!video) throw new ApiError(404, "Video Not Found!!");
+    
+    // delete the video and thumbnail file from cloudinary
+    
+    // delete the object with videoId from DB
+    const deletedVideo = await Video.deleteOne(video)
+    if(!deletedVideo) throw new ApiError(500, "Video Deletion Failed!!");
 
-})
-
-// 3. update video details
-const updateVideoDetails = asyncHandler(async(req,res) => {
-
-})
-
-// 4. count views
-const countViews = asyncHandler(async(req, res) => {
+    // return response
+    res.status(200).json(
+        new ApiResponse(
+            200,
+            {},
+            "Video Deleted Successfully!"
+        )
+    )
+    
 
 })
 
 // TODO:
-// 2. delete Video
-// 3. update video details
-// 4. count views
+// 2. update Video
+// 3. delete Video
+
 
 
 export {
     uploadVideo,
-    deleteVideo,
-    updateVideoDetails,
-    countViews,
+    deleteVideo
 }

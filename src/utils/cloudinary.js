@@ -32,7 +32,18 @@ const uploadOnCloudinary = async(localFilePath) => {
     }
 }
 
-export {uploadOnCloudinary}
+// delete from cloudinary
+const deleteFromCloudinary = async(fileName) => {
+    try {
+        if(!fileName) return null;
+        const response = await cloudinary.api.delete_resources([fileName], { type: 'upload', resource_type: 'video' })
+        return response;
+    } catch (error) {
+        return null;
+    }
+}
+
+export {uploadOnCloudinary, deleteFromCloudinary}
 
 // const uploadResult = await cloudinary.uploader.upload("https://res.cloudinary.com/demo/image/upload/getting-started/shoes.jpg", {
 //         public_id: "shoes"
