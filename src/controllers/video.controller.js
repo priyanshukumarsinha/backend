@@ -69,7 +69,37 @@ const uploadVideo = asyncHandler(async(req, res) => {
 
 })
 
-// 2. delete Video
+// 2. update Video
+const updateVideo = asyncHandler(async(req, res) => {
+    const {videoId, title, description, thumbnail} = req.params;
+    if(!videoId) throw new ApiError(404, "Video Id not Found!!")
+
+    const video = await Video.findByIdAndUpdate(videoId,
+        {
+            $set : {
+                title,
+                description,
+                thumbnail
+            },
+        },
+        {
+            new: true
+        }
+    )
+
+    if(!video) throw new ApiError(404, "Video Not Found!!");
+
+    // return response
+    res.status(200).json(
+        new ApiResponse(
+            200,
+            {},
+            "Video Details Updated Successfully!"
+        )
+    )
+})
+
+// 3. delete Video
 const deleteVideo = asyncHandler(async(req, res) => {
     // Algorithm :
     // take videoId from params
@@ -79,9 +109,11 @@ const deleteVideo = asyncHandler(async(req, res) => {
     
     // take videoId from params
     const {videoId} = req.params
+    if(!videoId) throw new ApiError(404, "Video Id not Found!!")
+
     const video = await Video.findById(videoId)
     if(!video) throw new ApiError(404, "Video Not Found!!");
-    
+
     // delete the video and thumbnail file from cloudinary
     
     // delete the object with videoId from DB
@@ -108,5 +140,6 @@ const deleteVideo = asyncHandler(async(req, res) => {
 
 export {
     uploadVideo,
-    deleteVideo
+    deleteVideo,
+    updateVideo
 }
