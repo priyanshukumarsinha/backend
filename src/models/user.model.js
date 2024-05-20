@@ -51,6 +51,8 @@ const userSchema = new Schema(
     , {timestamps : true})
 
 // this hook will change password every time we saves data
+
+
 // here we use function(){}, so that we can have context (this)
 userSchema.pre("save", async function(next){
     if(!this.isModified("password")) return next();
